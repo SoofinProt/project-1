@@ -4,6 +4,8 @@ import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 import "./project-1-dots.js";
 import "./project-1-nav.js";
 
+const TOTAL_FOXES = 5;
+
 export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
   static get tag() {
@@ -12,13 +14,12 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
-    this.foxData = null;
     this.liked = false;
     this.loading = true;
-    this.images = [];     // will hold multiple fox images eventually
+    this.images = [];
     this.activeIndex = 0;
     this.t = this.t || {};
-    this.t = { ...this.t, title: "Fox of the Day" };
+    this.t = { ...this.t, title: "Photo Gallery" };
     this.registerLocalization({
       context: this,
       localesPath:
@@ -29,7 +30,6 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
   static get properties() {
     return {
       ...super.properties,
-      foxData: { type: Object },
       liked: { type: Boolean },
       loading: { type: Boolean },
       images: { type: Array },
@@ -72,7 +72,6 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
           align-items: center;
           justify-content: center;
           font-size: var(--ddd-font-size-4xs);
-          font-weight: var(--ddd-font-weight-bold);
           color: var(--ddd-theme-default-white);
           flex-shrink: 0;
         }
@@ -84,7 +83,12 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
           color: var(--ddd-theme-default-nittanyNavy);
         }
 
-        /* image area with arrows overlaid on sides */
+        .channel {
+          font-size: var(--ddd-font-size-4xs);
+          margin: 0;
+          color: var(--ddd-theme-default-limestoneGray);
+        }
+
         .img-container {
           position: relative;
           width: 100%;
@@ -94,12 +98,14 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
         .img-wrap {
           width: 100%;
-          aspect-ratio: 1;
+          height: 380px;
+          aspect-ratio: 1 / 1;
           background: var(--ddd-theme-default-limestoneMaxLight);
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
+          flex-shrink: 0;
         }
 
         .img-wrap img {
@@ -114,7 +120,6 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
           color: var(--ddd-theme-default-limestoneGray);
         }
 
-        /* position arrows on top of the image */
         project-1-nav {
           position: absolute;
           z-index: 2;
@@ -131,7 +136,6 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
         .actions {
           display: flex;
           align-items: center;
-          gap: var(--ddd-spacing-4);
           padding: var(--ddd-spacing-3) var(--ddd-spacing-4) var(--ddd-spacing-2);
         }
 
@@ -153,36 +157,50 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
           padding: var(--ddd-spacing-1) var(--ddd-spacing-4) var(--ddd-spacing-4);
           font-size: var(--ddd-font-size-4xs);
           color: var(--ddd-theme-default-nittanyNavy);
-          line-height: 1.5;
+          min-height: 40px;
         }
 
-        .caption strong {
-          font-weight: var(--ddd-font-weight-bold);
-        }
-
-        .src-link {
-          color: var(--ddd-theme-default-beaverBlue);
-          font-size: var(--ddd-font-size-4xs);
-          margin-left: var(--ddd-spacing-2);
-        }
-
-        .reload-btn {
+        .source-link {
           display: block;
-          width: calc(100% - var(--ddd-spacing-8));
-          margin: 0 var(--ddd-spacing-4) var(--ddd-spacing-4);
-          padding: var(--ddd-spacing-2);
-          border-radius: var(--ddd-radius-sm);
-          border: 1px solid var(--ddd-theme-default-limestoneLight);
-          background: none;
-          cursor: pointer;
+          padding: 0 var(--ddd-spacing-4) var(--ddd-spacing-4);
           font-size: var(--ddd-font-size-4xs);
-          font-family: var(--ddd-font-navigation);
-          color: var(--ddd-theme-default-coalyGray);
-          transition: background 0.15s;
+          color: var(--ddd-theme-default-link);
         }
 
-        .reload-btn:hover {
-          background: var(--ddd-theme-default-limestoneMaxLight);
+        @media (max-width: 420px) {
+          .card {
+            margin: 0;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+          }
+
+          .img-wrap {
+            height: 300px;
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .card {
+            background: var(--ddd-theme-default-coalyGray);
+            border-color: #444;
+          }
+
+          .header {
+            border-color: #444;
+          }
+
+          .username {
+            color: var(--ddd-theme-default-white);
+          }
+
+          .caption {
+            color: var(--ddd-theme-default-white);
+          }
+
+          .img-wrap {
+            background: #222;
+          }
         }
       `,
     ];
@@ -190,8 +208,7 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
   connectedCallback() {
     super.connectedCallback();
-    // load 3 foxes so prev/next actually works for check-in 1
-    this._loadFoxes(3);
+    this._loadPhotos();
     this.addEventListener("play-list-nav-clicked", this._handleNav);
     this.addEventListener("play-list-index-changed", this._handleDotClick);
   }
@@ -202,17 +219,19 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
     this.removeEventListener("play-list-index-changed", this._handleDotClick);
   }
 
-  async _loadFoxes(count = 3) {
+  async _loadPhotos() {
     this.loading = true;
     this.images = [];
+    this.activeIndex = 0;
     try {
-      // fetch multiple foxes in parallel
-      const requests = Array.from({ length: count }, () =>
+      const fetches = Array.from({ length: TOTAL_FOXES }, () =>
         fetch("https://randomfox.ca/floof/").then((r) => r.json())
       );
-      this.images = await Promise.all(requests);
-      this.foxData = this.images[0];
-      this.activeIndex = 0;
+      const results = await Promise.all(fetches);
+      this.images = results.map((data, i) => ({
+        image: data.image,
+        link: data.link,
+      }));
     } catch (e) {
       console.error("Fetch failed:", e);
     } finally {
@@ -227,12 +246,10 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
     } else if (direction === "prev" && this.activeIndex > 0) {
       this.activeIndex -= 1;
     }
-    this.foxData = this.images[this.activeIndex];
   }
 
   _handleDotClick(e) {
     this.activeIndex = e.detail.index;
-    this.foxData = this.images[this.activeIndex];
   }
 
   _toggleLike() {
@@ -240,17 +257,19 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   render() {
-    const current = this.images[this.activeIndex] || this.foxData;
+    const current = this.images[this.activeIndex] || null;
 
     return html`
       <div class="card">
 
         <div class="header">
           <div class="avatar">RF</div>
-          <p class="username">randomfox.ca</p>
+          <div>
+            <p class="username">Random Fox</p>
+            <p class="channel">@randomfox.ca</p>
+          </div>
         </div>
 
-        <!-- image with prev/next arrows overlaid -->
         <div class="img-container">
           <project-1-nav
             direction="prev"
@@ -259,8 +278,10 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
           <div class="img-wrap">
             ${this.loading
-              ? html`<span class="loading-text">Loading fox...</span>`
-              : html`<img src="${current.image}" alt="A random fox" />`}
+              ? html`<span class="loading-text">Loading...</span>`
+              : current
+                ? html`<img src="${current.image}" alt="${current.title}" />`
+                : html`<span class="loading-text">No images found.</span>`}
           </div>
 
           <project-1-nav
@@ -269,7 +290,6 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
           ></project-1-nav>
         </div>
 
-        <!-- dots below the image -->
         <project-1-dots
           count="${this.images.length}"
           index="${this.activeIndex}"
@@ -277,20 +297,15 @@ export class Project1 extends DDDSuper(I18NMixin(LitElement)) {
 
         <div class="actions">
           <button class="like-btn" @click="${this._toggleLike}" title="Like">
-            ${this.liked ? "❤️" : "🤍"}
+            ${this.liked ? "♥" : "♡"}
           </button>
-          ${current
-            ? html`<a class="src-link" href="${current.link}" target="_blank">view source</a>`
-            : ""}
         </div>
 
-        <div class="caption">
-          <strong>randomfox.ca</strong> A random fox, just for you.
-        </div>
+        <p class="caption">${current?.title ?? ""} *gasp* A fox!</p>
 
-        <button class="reload-btn" @click="${() => this._loadFoxes(3)}">
-          Load new foxes
-        </button>
+        ${current?.link
+          ? html`<a class="source-link" href="${current.link}" target="_blank">View source</a>`
+          : ""}
 
       </div>
     `;

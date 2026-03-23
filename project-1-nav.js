@@ -7,7 +7,7 @@ export class Project1Nav extends DDDSuper(LitElement) {
   static get properties() {
     return {
       direction: { type: String },
-      disabled: { type: Boolean, Reflect: true },
+      disabled: { type: Boolean, reflect: true },
     };
   }
 
