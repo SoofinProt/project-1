@@ -23,13 +23,14 @@ export class Project1Dots extends DDDSuper(LitElement) {
       css`
         :host {
           display: flex;
+          flex-direction: row;
           justify-content: center;
           padding: var(--ddd-spacing-3) 0;
         }
 
-        /* FIX 3: tablist wrapper — needs display:flex to preserve centering */
         .dot-list {
           display: flex;
+          flex-direction: row;
           gap: var(--ddd-spacing-3);
           list-style: none;
           margin: 0;
@@ -81,10 +82,6 @@ export class Project1Dots extends DDDSuper(LitElement) {
   render() {
     if (this.count === 0) return html``;
 
-    // FIX 3: use a proper nav landmark with aria-label instead of role="tablist".
-    // The dots are navigation controls, not tabs, so role="tab" was incorrect.
-    // Plain buttons inside a <nav> with descriptive aria-labels is cleaner
-    // and passes ARIA authoring practices without requiring a tablist parent.
     return html`
       <nav aria-label="Photo slide navigation">
         <ul class="dot-list">

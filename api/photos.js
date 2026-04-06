@@ -1,144 +1,197 @@
-/**
- * /api/photos.js  — Vercel serverless endpoint
- *
- * Returns author metadata + an array of 15 photo objects.
- * Run locally with: vercel dev
- * Access at:        http://localhost:3000/api/photos
- */
-
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/json");
 
+  const allPhotos = [
+    {
+      id: 1,
+      description: "foxes!",
+      dateTaken: "2023-07-14",
+      thumbnail: "https://randomfox.ca/images/1.jpg",
+      fullSize:  "https://randomfox.ca/images/1.jpg"
+    },
+    {
+      id: 2,
+      description: "foxes!",
+      dateTaken: "2023-08-02",
+      thumbnail: "https://randomfox.ca/images/5.jpg",
+      fullSize:  "https://randomfox.ca/images/5.jpg"
+    },
+    {
+      id: 3,
+      description: "foxes!",
+      dateTaken: "2023-01-15",
+      thumbnail: "https://randomfox.ca/images/10.jpg",
+      fullSize:  "https://randomfox.ca/images/10.jpg"
+    },
+    {
+      id: 4,
+      description: "foxes!",
+      dateTaken: "2023-05-09",
+      thumbnail: "https://randomfox.ca/images/15.jpg",
+      fullSize:  "https://randomfox.ca/images/15.jpg"
+    },
+    {
+      id: 5,
+      description: "foxes!",
+      dateTaken: "2023-09-30",
+      thumbnail: "https://randomfox.ca/images/20.jpg",
+      fullSize:  "https://randomfox.ca/images/20.jpg"
+    },
+    {
+      id: 6,
+      description: "foxes!",
+      dateTaken: "2023-12-18",
+      thumbnail: "https://randomfox.ca/images/25.jpg",
+      fullSize:  "https://randomfox.ca/images/25.jpg"
+    },
+    {
+      id: 7,
+      description: "foxes!",
+      dateTaken: "2023-06-03",
+      thumbnail: "https://randomfox.ca/images/30.jpg",
+      fullSize:  "https://randomfox.ca/images/30.jpg"
+    },
+    {
+      id: 8,
+      description: "foxes!",
+      dateTaken: "2023-07-28",
+      thumbnail: "https://randomfox.ca/images/35.jpg",
+      fullSize:  "https://randomfox.ca/images/35.jpg"
+    },
+    {
+      id: 9,
+      description: "foxes!",
+      dateTaken: "2023-10-15",
+      thumbnail: "https://randomfox.ca/images/40.jpg",
+      fullSize:  "https://randomfox.ca/images/40.jpg"
+    },
+    {
+      id: 10,
+      description: "foxes!",
+      dateTaken: "2023-08-19",
+      thumbnail: "https://randomfox.ca/images/45.jpg",
+      fullSize:  "https://randomfox.ca/images/45.jpg"
+    },
+    {
+      id: 11,
+      description: "foxes!",
+      dateTaken: "2023-04-05",
+      thumbnail: "https://randomfox.ca/images/50.jpg",
+      fullSize:  "https://randomfox.ca/images/50.jpg"
+    },
+    {
+      id: 12,
+      description: "foxes!",
+      dateTaken: "2023-11-07",
+      thumbnail: "https://randomfox.ca/images/55.jpg",
+      fullSize:  "https://randomfox.ca/images/55.jpg"
+    },
+    {
+      id: 13,
+      description: "foxes!",
+      dateTaken: "2023-02-11",
+      thumbnail: "https://randomfox.ca/images/60.jpg",
+      fullSize:  "https://randomfox.ca/images/60.jpg"
+    },
+    {
+      id: 14,
+      description: "foxes!",
+      dateTaken: "2023-10-22",
+      thumbnail: "https://randomfox.ca/images/65.jpg",
+      fullSize:  "https://randomfox.ca/images/65.jpg"
+    },
+    {
+      id: 15,
+      description: "foxes!",
+      dateTaken: "2023-08-11",
+      thumbnail: "https://randomfox.ca/images/70.jpg",
+      fullSize:  "https://randomfox.ca/images/70.jpg"
+    },
+    {
+      id: 16,
+      description: "foxes!",
+      dateTaken: "2023-03-22",
+      thumbnail: "https://randomfox.ca/images/75.jpg",
+      fullSize:  "https://randomfox.ca/images/75.jpg"
+    },
+    {
+      id: 17,
+      description: "foxes!",
+      dateTaken: "2023-05-30",
+      thumbnail: "https://randomfox.ca/images/80.jpg",
+      fullSize:  "https://randomfox.ca/images/80.jpg"
+    },
+    {
+      id: 18,
+      description: "foxes!",
+      dateTaken: "2023-06-17",
+      thumbnail: "https://randomfox.ca/images/85.jpg",
+      fullSize:  "https://randomfox.ca/images/85.jpg"
+    },
+    {
+      id: 19,
+      description: "foxes!",
+      dateTaken: "2023-01-29",
+      thumbnail: "https://randomfox.ca/images/90.jpg",
+      fullSize:  "https://randomfox.ca/images/90.jpg"
+    },
+    {
+      id: 20,
+      description: "foxes!",
+      dateTaken: "2023-09-04",
+      thumbnail: "https://randomfox.ca/images/95.jpg",
+      fullSize:  "https://randomfox.ca/images/95.jpg"
+    },
+    {
+      id: 21,
+      description: "foxes!",
+      dateTaken: "2023-07-05",
+      thumbnail: "https://randomfox.ca/images/100.jpg",
+      fullSize:  "https://randomfox.ca/images/100.jpg"
+    },
+    {
+      id: 22,
+      description: "foxes!",
+      dateTaken: "2023-08-25",
+      thumbnail: "https://randomfox.ca/images/105.jpg",
+      fullSize:  "https://randomfox.ca/images/105.jpg"
+    },
+    {
+      id: 23,
+      description: "foxes!",
+      dateTaken: "2023-11-20",
+      thumbnail: "https://randomfox.ca/images/110.jpg",
+      fullSize:  "https://randomfox.ca/images/110.jpg"
+    },
+    {
+      id: 24,
+      description: "foxes!",
+      dateTaken: "2023-04-18",
+      thumbnail: "https://randomfox.ca/images/115.jpg",
+      fullSize:  "https://randomfox.ca/images/115.jpg"
+    },
+    {
+      id: 25,
+      description: "foxes!",
+      dateTaken: "2023-06-28",
+      thumbnail: "https://randomfox.ca/images/120.jpg",
+      fullSize:  "https://randomfox.ca/images/120.jpg"
+    }
+  ];
+
+  const shuffled = allPhotos
+    .map(photo => ({ photo, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ photo }) => photo)
+    .slice(0, 7);
+
   const data = {
     author: {
-      name: "Mara Solano",
-      image: "https://i.pravatar.cc/150?img=47",
-      userSince: "2019-04-12",
-      channel: "mara.in.the.wild"
+      name: "SoofinProt",
+      channel: "Soofin.Prot",
     },
-    photos: [
-      {
-        id: 1,
-        title: "Golden Hour on the Ridge",
-        description: "Caught this light just before it vanished behind the treeline. Worth the 4 a.m. alarm.",
-        dateTaken: "2023-07-14",
-        thumbnail: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=90"
-      },
-      {
-        id: 2,
-        title: "Fog Over the Valley",
-        description: "A slow morning fog rolling through. No filter — the world just looked like this.",
-        dateTaken: "2023-08-02",
-        thumbnail: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=90"
-      },
-      {
-        id: 3,
-        title: "Desert Bloom",
-        description: "After the rain, the desert surprises you. These wildflowers showed up overnight.",
-        dateTaken: "2023-03-21",
-        thumbnail: "https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1200&q=90"
-      },
-      {
-        id: 4,
-        title: "Still Water",
-        description: "A lake that barely moves. You can hear the silence.",
-        dateTaken: "2023-05-09",
-        thumbnail: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&q=90"
-      },
-      {
-        id: 5,
-        title: "The Old Lighthouse",
-        description: "Decommissioned in 1987, still standing like it owns the coastline.",
-        dateTaken: "2023-09-30",
-        thumbnail: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=90"
-      },
-      {
-        id: 6,
-        title: "Winter Silence",
-        description: "Snowfall turns forests into cathedrals. Every branch is a sentence.",
-        dateTaken: "2023-12-18",
-        thumbnail: "https://images.unsplash.com/photo-1418985991508-e47386d96a71?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1418985991508-e47386d96a71?w=1200&q=90"
-      },
-      {
-        id: 7,
-        title: "Canyon Light",
-        description: "The slot canyon filters light into something that doesn't look real.",
-        dateTaken: "2023-06-03",
-        thumbnail: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200&q=90"
-      },
-      {
-        id: 8,
-        title: "Field of Lavender",
-        description: "Provence in July. Bees everywhere. Wouldn't change a thing.",
-        dateTaken: "2023-07-28",
-        thumbnail: "https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=1200&q=90"
-      },
-      {
-        id: 9,
-        title: "Tide Pools at Dusk",
-        description: "Low tide reveals tiny worlds. Every pool is its own universe.",
-        dateTaken: "2023-10-15",
-        thumbnail: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1200&q=90"
-      },
-      {
-        id: 10,
-        title: "Alpine Meadow",
-        description: "Above the treeline everything simplifies. Sky, grass, and you.",
-        dateTaken: "2023-08-19",
-        thumbnail: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1200&q=90"
-      },
-      {
-        id: 11,
-        title: "Salt Flats Horizon",
-        description: "The flattest place I've ever stood. The horizon feels impossibly far.",
-        dateTaken: "2023-04-05",
-        thumbnail: "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=1200&q=90"
-      },
-      {
-        id: 12,
-        title: "Forest Path",
-        description: "Light through old growth Douglas fir. Felt like stepping into a myth.",
-        dateTaken: "2023-11-07",
-        thumbnail: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=90"
-      },
-      {
-        id: 13,
-        title: "Waterfall at Noon",
-        description: "The mist alone is worth the two-mile hike. The falls are a bonus.",
-        dateTaken: "2023-05-31",
-        thumbnail: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=1200&q=90"
-      },
-      {
-        id: 14,
-        title: "Rocky Shoreline",
-        description: "The Atlantic in October. Cold, dramatic, and completely indifferent to me.",
-        dateTaken: "2023-10-22",
-        thumbnail: "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=1200&q=90"
-      },
-      {
-        id: 15,
-        title: "Starfield Above the Pines",
-        description: "30-second exposure, 11 PM, no moon. The Milky Way showed up for it.",
-        dateTaken: "2023-08-11",
-        thumbnail: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&q=80",
-        fullSize:  "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&q=90"
-      }
-    ]
+    photos: shuffled
   };
 
   res.status(200).json(data);
